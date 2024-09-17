@@ -123,7 +123,7 @@ const UserProfileSchema = new mongoose.Schema({
     type: [String], 
   },
   achievements: {
-    type: String, 
+    type: [String], 
   },
   preferences: PreferencesSchema, 
   links: LinksSchema, 

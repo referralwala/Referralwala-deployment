@@ -1,36 +1,12 @@
 const UserProfile = require('../models/UserProfile');
-const multer = require('multer');
-const path = require('path');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads/resumes'); 
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    if (ext !== '.pdf') {
-      return cb(new Error('Only PDFs are allowed'), false);
-    }
-    cb(null, true);
-  },
-});
-
-// @route   POST /profile
-// @desc    Create user profile
 exports.createProfile = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, gender, aboutMe, presentCompany, education, experience, skills, achievements, preferences, links } = req.body;
+    const { firstName, lastName, email, phone, gender, aboutMe, presentCompany, education, experience, skills, achievements, preferences, links, resume } = req.body;
 
     let profile = await UserProfile.findOne({ email });
     if (profile) {
-      return res.status(400).json({ msg: 'Profile already exists' });
+      throw new Error('Profile already exists'); 
     }
 
     profile = new UserProfile({
@@ -47,65 +23,41 @@ exports.createProfile = async (req, res) => {
       achievements,
       preferences,
       links,
-      resume: req.file ? req.file.path : null, 
+      resume,
     });
 
     await profile.save();
     res.status(201).json(profile);
   } catch (err) {
+    
     console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
-
-// @route   GET /profile/:email
-// @desc    Get user profile by email
-exports.getProfile = async (req, res) => {
-  try {
-    const profile = await UserProfile.findOne({ email: req.params.email });
-    if (!profile) {
-      return res.status(404).json({ msg: 'Profile not found' });
+    if (err.message === 'Profile already exists') {
+      return res.status(400).json({ msg: err.message });
     }
-    res.status(200).json(profile);
-  } catch (err) {
-    console.error(err.message);
     res.status(500).send('Server Error');
   }
 };
 
-// @route   PUT /profile/:email
-// @desc    Update user profile
+
+
 exports.updateProfile = async (req, res) => {
-  const { firstName, lastName, phone, gender, aboutMe, presentCompany, education, experience, skills, achievements, preferences, links } = req.body;
-
-  const profileFields = {
-    firstName,
-    lastName,
-    phone,
-    gender,
-    aboutMe,
-    presentCompany,
-    education,
-    experience,
-    skills,
-    achievements,
-    preferences,
-    links,
-    resume: req.file ? req.file.path : null, 
-  };
+  const { id } = req.params; 
+  const updateData = req.body; 
 
   try {
-    let profile = await UserProfile.findOne({ email: req.params.email });
+   
+    const profile = await UserProfile.findById(id);
 
     if (!profile) {
       return res.status(404).json({ msg: 'Profile not found' });
     }
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] !== undefined) {
+        profile[key] = updateData[key];
+      }
+    });
 
-    profile = await UserProfile.findOneAndUpdate(
-      { email: req.params.email },
-      { $set: profileFields },
-      { new: true }
-    );
+    await profile.save();
 
     res.json(profile);
   } catch (err) {
@@ -115,4 +67,50 @@ exports.updateProfile = async (req, res) => {
 };
 
 
-exports.uploadResume = upload.single('resume');
+exports.getProfileById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const profile = await UserProfile.findById(id);
+
+    if (!profile) {
+      return res.status(404).json({ msg: 'Profile not found' });
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error('Error fetching profile by ID:', err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+
+exports.getProfileByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const profile = await UserProfile.findOne({ email });
+
+    if (!profile) {
+      return res.status(404).json({ msg: 'Profile not found' });
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error('Error fetching profile by email:', err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+exports.getAllProfiles = async (req, res) => {
+  try {
+    console.log('Fetching all profiles');
+    const profiles = await UserProfile.find(); 
+    if (profiles.length === 0) {
+      return res.status(404).json({ msg: 'No profiles found' }); 
+    }
+    console.log('Profiles fetched:', profiles);
+    res.status(200).json(profiles); 
+  } catch (err) {
+    console.error('Error fetching profiles:', err.message);
+    res.status(500).send('Server Error'); 
+  }
+};

@@ -1,13 +1,20 @@
 const express = require('express');
-const { createProfile, getProfile, updateProfile, uploadResume } = require('../controllers/userProfileController');
-
+const { createProfile, getProfileById, getProfileByEmail, getAllProfiles, updateProfile } = require('../controllers/UserProfileController');
 const router = express.Router();
 
-
+// Create a profile
 router.post('/create', createProfile);
-router.get('/:id', getProfile);
-router.get('/:email', getProfile);
+
+// Get a profile by ID
+router.get('/id/:id', getProfileById);
+
+// Get a profile by email
+router.get('/email/:email', getProfileByEmail);
+
+// Update a profile by ID
 router.put('/update/:id', updateProfile);
-router.post('/upload-resume', uploadResume);
+
+// Get all profiles
+router.get('/all', getAllProfiles);
 
 module.exports = router;
