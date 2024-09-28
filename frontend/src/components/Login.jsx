@@ -1,23 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   return (
-    <section class="h-full bg-gray-100/80">
+    <section class="h-full bg-slate-200/90">
       <body class="h-full">
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
               className="mx-auto h-10 w-auto"
               src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
-              alt="Your Company"
+              alt="Referral Wala"
             />
-            <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Sign in to your account
-            </h2>
           </div>
 
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
             <div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+              <h2 className="mb-3 text-start text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                Sign in to your account
+              </h2>
               <form className="space-y-6" action="#" method="POST">
                 <div>
                   <label
@@ -31,6 +32,7 @@ function Login() {
                       id="email"
                       name="email"
                       type="email"
+                      placeholder="Enter your email addresss"
                       autoComplete="email"
                       required
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -50,6 +52,7 @@ function Login() {
                       id="password"
                       name="password"
                       type="password"
+                      placeholder="Enter your password"
                       autoComplete="current-password"
                       required
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -75,7 +78,7 @@ function Login() {
 
                   <div className="text-sm leading-6">
                     <a
-                      href="#"
+                      href="##"
                       className="font-semibold text-blue-600 hover:text-blue-500"
                     >
                       Forgot password?
@@ -110,7 +113,7 @@ function Login() {
 
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   <a
-                    href="#"
+                    href="/"
                     className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                   >
                     <svg
@@ -141,7 +144,7 @@ function Login() {
                   </a>
 
                   <a
-                    href="#"
+                    href="/"
                     className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                   >
                     <svg
@@ -161,13 +164,23 @@ function Login() {
                     </span>
                   </a>
                 </div>
+
+                <p className="mt-8 text-center text-sm text-gray-500">
+                  Already have an account?{" "}
+                  <Link
+                    to={`/user-signup`}
+                    className="font-semibold leading-6 text-blue-600 hover:text-blue-500"
+                  >
+                    Sign up
+                  </Link>
+                </p>
               </div>
             </div>
 
             <p className="mt-10 text-center text-sm text-gray-500">
               Not a member?{" "}
               <a
-                href="#"
+                href="/"
                 className="font-semibold leading-6 text-blue-600 hover:text-blue-500"
               >
                 Start a 14 day free trial
