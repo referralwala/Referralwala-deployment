@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const jobPostRoutes = require('./routes/jobPostRoutes');
+const cron = require('node-cron');
+const Notification = require('./models/Notification');
 dotenv.config();
 
 const app = express();
@@ -10,6 +12,15 @@ const app = express();
 connectDB();
 
 app.use(express.json());
+cron.schedule('0 0 * * *', async () => {
+    try {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      await Notification.deleteMany({ createdAt: { $lt: sevenDaysAgo } });
+      console.log('Old notifications deleted successfully.');
+    } catch (err) {
+      console.error('Error deleting old notifications:', err.message);
+    }
+  });
 
 
 app.use('/user', userRoutes);

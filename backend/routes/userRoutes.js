@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, verifyOTP, forgotPassword, resetPassword, resendOTP , getAllProfiles, getProfileById, getProfileByEmail, updateProfileById} = require('../controllers/UserController');
+const { registerUser, loginUser, verifyOTP, forgotPassword, resetPassword, resendOTP , getAllProfiles, getProfileById, getProfileByEmail, updateProfileById, followUser, unfollowUser, getNotifications} = require('../controllers/UserController');
 
 const jwtMiddleware = require('../middleware/jwtMiddleware'); 
 
@@ -15,5 +15,8 @@ router.get('/profile/:id', getProfileById);
 router.get('/profile/email/:email', jwtMiddleware,  getProfileByEmail);
 router.get('/profiles',  getAllProfiles);
 router.put('/profile/:id',  updateProfileById);
+router.post('/follow/:id', followUser);
+router.post('/unfollow/:id', unfollowUser);
+router.get('/notifications/:userId', getNotifications);
 
 module.exports = router;

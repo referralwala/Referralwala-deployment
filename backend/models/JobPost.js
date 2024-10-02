@@ -9,15 +9,15 @@ const JobPostSchema = new Schema({
   },
   jobRole: {
     type: String,
-    required: true,
+    required: false,
   },
   companyName: {
     type: String,
-    required: true,
+    required: false,
   },
   jobDescription: {
     type: String,
-    required: true,
+    required: false,
   },
   experienceRequired: {
     type: String,

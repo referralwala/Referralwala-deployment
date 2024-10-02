@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt'); 
 const nodemailer = require('nodemailer');
@@ -274,4 +275,80 @@ exports.updateProfileById = async (req, res) => {
   }
 };
 
+
+exports.followUser = async (req, res) => {
+  try {
+      const { id } = req.params; // ID of the user to follow
+      const { userId } = req.body; // ID of the user following
+
+      const userToFollow = await User.findById(id);
+      const follower = await User.findById(userId);
+
+      if (!userToFollow || !follower) {
+          return res.status(404).json({ msg: 'User not found' });
+      }
+
+      // Check if already following
+      if (follower.following.includes(id)) {
+          return res.status(400).json({ msg: 'Already following this user' });
+      }
+
+      // Follow the user
+      follower.following.push(id);
+      userToFollow.followers.push(userId);
+      await follower.save();
+      await userToFollow.save();
+
+      res.status(200).json({ msg: 'You are now following this user' });
+  } catch (err) {
+      console.error('Error following user:', err.message);
+      res.status(500).send('Server Error');
+  }
+};
+
+// Unfollow a user
+exports.unfollowUser = async (req, res) => {
+  try {
+      const { id } = req.params; // ID of the user to unfollow
+      const { userId } = req.body; // ID of the user unfollowing
+
+      const userToUnfollow = await User.findById(id);
+      const unfollower = await User.findById(userId);
+
+      if (!userToUnfollow || !unfollower) {
+          return res.status(404).json({ msg: 'User not found' });
+      }
+
+      // Check if not following
+      if (!unfollower.following.includes(id)) {
+          return res.status(400).json({ msg: 'Not following this user' });
+      }
+
+      // Unfollow the user
+      unfollower.following.pull(id);
+      userToUnfollow.followers.pull(userId);
+      await unfollower.save();
+      await userToUnfollow.save();
+
+      res.status(200).json({ msg: 'You have unfollowed this user' });
+  } catch (err) {
+      console.error('Error unfollowing user:', err.message);
+      res.status(500).send('Server Error');
+  }
+};
+
+// Get notifications for a user
+exports.getNotifications = async (req, res) => {
+  try {
+      const { userId } = req.params; // ID of the user for whom notifications are to be fetched
+      const notifications = await Notification.find({ user: userId })
+          .populate('post', 'title') // Adjust to your post model fields
+          .sort({ createdAt: -1 });
+
+      res.status(200).json(notifications);
+  } catch (err) {
+      console.error('Error fetching notifications:', err.message);
+      res.status(500).send('Server Error');
+  }
+};
 
