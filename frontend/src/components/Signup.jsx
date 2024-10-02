@@ -1,9 +1,51 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Signup() {
+  const [formData, setFormData] = useState({
+    email: "",
+    mobileNumber: "",
+    password: "",
+  });
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess("Registration successful! Please log in.");
+        toast.success("Registration successful! Please log in.");
+      } else {
+        toast.error(data.message || "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+
   return (
-    <section className="h-full bg-slate-200/90">
+    <section className="min-h-screen bg-slate-200/90">
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <img
@@ -18,26 +60,7 @@ function Signup() {
             <h2 className="mb-3 text-start text-2xl font-bold leading-9 tracking-tight text-gray-900">
               Create your account
             </h2>
-            <form className="space-y-6" action="#" method="POST">
-              <div>
-                <label
-                  htmlFor="full-name"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Full Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="full-name"
-                    name="full-name"
-                    type="text"
-                    placeholder="Enter your Full Name"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -50,9 +73,31 @@ function Signup() {
                     id="email"
                     name="email"
                     type="email"
-                    autoComplete="email"
-                    placeholder="Enter your email addresss"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
+                    placeholder="Enter your email address"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="mobileNumber"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Mobile Number
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="mobileNumber"
+                    name="mobileNumber"
+                    type="text"
+                    value={formData.mobileNumber}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter your mobile number"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -70,51 +115,12 @@ function Signup() {
                     id="password"
                     name="password"
                     type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
                     placeholder="Enter your password"
-                    required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                   />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="confirm-password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Confirm Password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="confirm-password"
-                    name="confirm-password"
-                    placeholder="Re-Enter your password"
-                    type="password"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="user-type"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  User Type
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="user-type"
-                    name="user-type"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                  >
-                    <option value="">Select User Type</option>
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
-                    <option value="parent">Parent</option>
-                  </select>
                 </div>
               </div>
 
@@ -140,6 +146,7 @@ function Signup() {
           </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </section>
   );
 }

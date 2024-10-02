@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await axios.post("http://localhost:5000/user/login", {
+        email,
+        password,
+      });
+
+      console.log("Login successful:", response.data);
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("Invalid email or password");
+    }
+  };
+
   return (
-    <section class="h-full bg-slate-200/90">
-      <body class="h-full">
+    <section className="min-h-screen bg-slate-200/90">
+      <body className="h-full">
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <img
@@ -19,7 +41,7 @@ function Login() {
               <h2 className="mb-3 text-start text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Sign in to your account
               </h2>
-              <form className="space-y-6" action="#" method="POST">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="email"
@@ -32,9 +54,11 @@ function Login() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="Enter your email addresss"
+                      placeholder="Enter your email address"
                       autoComplete="email"
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                     />
                   </div>
@@ -55,10 +79,14 @@ function Login() {
                       placeholder="Enter your password"
                       autoComplete="current-password"
                       required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
+
+                {error && <p className="text-red-600">{error}</p>}
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
@@ -148,25 +176,35 @@ function Login() {
                     className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                   >
                     <svg
-                      className="h-5 w-5 fill-[#24292F]"
+                      className="h-5 w-5"
                       aria-hidden="true"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
+                      viewBox="0 0 24 24"
                     >
                       <path
-                        fillRule="evenodd"
-                        d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z"
-                        clipRule="evenodd"
+                        fill="#4285F4"
+                        d="M23.577 12.084c0-.785-.07-1.548-.203-2.29h-10.21v4.474h5.838c-.251 1.28-1.134 2.366-2.572 2.786v3.685h4.643c2.704-2.499 4.634-6.101 4.634-10.675z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.181 16.903c-1.404-1.116-2.484-2.527-2.484-4.903s1.079-3.788 2.484-4.903v2.786c-1.023.83-1.691 2.12-1.691 3.945 0 1.825.668 3.115 1.691 3.945v2.786z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M5.181 8.097c1.404-1.116 2.484-2.527 2.484-4.903s-1.079-3.788-2.484-4.903v2.786c1.023.83 1.691 2.12 1.691 3.945 0 1.825-.668 3.115-1.691 3.945v2.786z"
                       />
                     </svg>
                     <span className="text-sm font-semibold leading-6">
-                      GitHub
+                      Github
                     </span>
                   </a>
                 </div>
 
                 <p className="mt-8 text-center text-sm text-gray-500">
-                  Already have an account?{" "}
+                  Don't have an account?{" "}
                   <Link
                     to={`/user-signup`}
                     className="font-semibold leading-6 text-blue-600 hover:text-blue-500"
@@ -176,16 +214,6 @@ function Login() {
                 </p>
               </div>
             </div>
-
-            <p className="mt-10 text-center text-sm text-gray-500">
-              Not a member?{" "}
-              <a
-                href="/"
-                className="font-semibold leading-6 text-blue-600 hover:text-blue-500"
-              >
-                Start a 14 day free trial
-              </a>
-            </p>
           </div>
         </div>
       </body>
