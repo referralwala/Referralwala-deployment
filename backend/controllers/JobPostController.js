@@ -6,7 +6,7 @@ const Notification = require('../models/Notification');
 // @desc    Create a new job referral post
 exports.createJobPost = async (req, res) => {
     try {
-      const { userId, jobRole, companyName, jobDescription, experienceRequired, location, workMode, employmentType, ctc, noOfReferrals, jobLink } = req.body;
+      const { userId, jobRole, jobId, endDate, companyName, jobDescription, experienceRequired, location, workMode, employmentType, ctc, noOfReferrals, jobLink } = req.body;
   
       // Check if the user exists
       const user = await User.findById(userId);
@@ -23,6 +23,8 @@ exports.createJobPost = async (req, res) => {
         experienceRequired,
         location,
         workMode,
+        jobId,
+        endDate,
         employmentType,
         ctc,
         noOfReferrals,

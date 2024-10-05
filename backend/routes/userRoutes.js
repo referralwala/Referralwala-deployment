@@ -11,12 +11,12 @@ router.post('/verify-otp', verifyOTP);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword); 
 router.post('/resend-otp', resendOTP);
-router.get('/profile/:id', getProfileById);
+router.get('/profile/:id',jwtMiddleware, getProfileById);
 router.get('/profile/email/:email', jwtMiddleware,  getProfileByEmail);
-router.get('/profiles',  getAllProfiles);
-router.put('/profile/:id',  updateProfileById);
-router.post('/follow/:id', followUser);
-router.post('/unfollow/:id', unfollowUser);
-router.get('/notifications/:userId', getNotifications);
+router.get('/profiles', jwtMiddleware, getAllProfiles);
+router.put('/profile/:id', jwtMiddleware, updateProfileById);
+router.post('/follow/:id',jwtMiddleware, followUser);
+router.post('/unfollow/:id',jwtMiddleware, unfollowUser);
+router.get('/notifications/:userId',jwtMiddleware, getNotifications);
 
 module.exports = router;

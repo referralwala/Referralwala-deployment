@@ -11,6 +11,10 @@ const JobPostSchema = new Schema({
     type: String,
     required: false,
   },
+  jobId: {
+    type: String,
+    required: false,
+  },
   companyName: {
     type: String,
     required: false,
@@ -57,6 +61,10 @@ const JobPostSchema = new Schema({
     type: String,
     enum: ['active', 'inactive'],
     default: 'active',
+  },
+  endDate: {
+    type: Date, // Storing the end date for the job post
+    required: false, 
   },
   createdAt: {
     type: Date,
