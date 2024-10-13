@@ -22,6 +22,9 @@ cron.schedule('0 0 * * *', async () => {
     }
   });
 
+  app.get('/', (req, res) => {
+    res.send('Server Running Successfully');
+});
 
 app.use('/user', userRoutes);
 app.use('/job', jobPostRoutes);
