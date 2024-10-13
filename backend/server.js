@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
 const jobPostRoutes = require('./routes/jobPostRoutes');
@@ -7,7 +8,13 @@ const cron = require('node-cron');
 const Notification = require('./models/Notification');
 dotenv.config();
 
+
+
 const app = express();
+app.use(cors({
+  origin: ['http://localhost:5000']
+}));
+app.use(express.json());
 
 connectDB();
 
@@ -22,9 +29,6 @@ cron.schedule('0 0 * * *', async () => {
     }
   });
 
-  app.get('/', (req, res) => {
-    res.send('Server Running Successfully');
-});
 
 app.use('/user', userRoutes);
 app.use('/job', jobPostRoutes);
